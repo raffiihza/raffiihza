@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raffi Ihza Zuhairnawan — System Administrator & Information Systems Graduate</title>
+<meta name="description" content="Portfolio of Raffi Ihza Zuhairnawan — Information Systems graduate focused on Linux, DevOps, and cloud computing.">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     THEME: "TERMINAL" — a stylized summary of the CV.
+     Dark console canvas, mono type, prompt-style section headings,
+     terminal-green accent. Everything lives in this one file.
+     GSAP is loaded from CDN; the page degrades gracefully offline.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+:root{
+  --bg:        #0a0e12;
+  --bg-2:      #0d1319;
+  --panel:     #101820;
+  --panel-2:   #131d27;
+  --border:    #1d2833;
+  --border-2:  #273645;
+  --text:      #e8eef4;
+  --muted:     #8fa0b0;
+  --faint:     #5c6b7a;
+  --accent:    #3fb950;   /* terminal green */
+  --accent-dim:#1f3d2b;
+  --cyan:      #39c5cf;   /* path / secondary accent */
+  --amber:     #d9a03f;   /* warnings / highlights */
+  --mono: "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: "Space Grotesk", -apple-system, "Segoe UI", Arial, sans-serif;
+  --radius: 10px;
+  --maxw: 1080px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{ background:var(--accent); color:#06130a; }
+
+/* ── backdrop grid + scanline ─────────────────────────────── */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(63,185,80,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63,185,80,.035) 1px, transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 100%);
+}
+
+.wrap{ width:100%; max-width:var(--maxw); margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+
+/* ── scroll progress ──────────────────────────────────────── */
+#progress{
+  position:fixed; top:0; left:0; height:2px; width:100%;
+  background:var(--accent); transform-origin:0 50%; transform:scaleX(0);
+  z-index:100;
+}
+
+/* ── nav ──────────────────────────────────────────────────── */
+nav{
+  position:fixed; top:0; left:0; right:0; z-index:90;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  background:rgba(10,14,18,.75);
+  border-bottom:1px solid var(--border);
+  transition:background .3s ease;
+}
+.nav-inner{
+  max-width:var(--maxw); margin:0 auto; padding:14px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{
+  font-family:var(--mono); font-size:14px; font-weight:700;
+  color:var(--text); text-decoration:none; white-space:nowrap;
+}
+.brand .p{ color:var(--accent); }
+.brand .path{ color:var(--cyan); }
+.nav-links{ display:flex; gap:4px; list-style:none; align-items:center; }
+.nav-links a{
+  font-family:var(--mono); font-size:12.5px; color:var(--muted);
+  text-decoration:none; padding:8px 12px; border-radius:6px;
+  transition:color .2s, background .2s;
+}
+.nav-links a:hover{ color:var(--accent); background:rgba(63,185,80,.08); }
+.nav-links a.active{ color:var(--accent); }
+.nav-links a .n{ color:var(--faint); margin-right:4px; }
+#menuBtn{
+  display:none; background:none; border:1px solid var(--border-2);
+  color:var(--text); font-family:var(--mono); font-size:12px;
+  padding:8px 12px; border-radius:6px; cursor:pointer;
+}
+
+/* ── hero ─────────────────────────────────────────────────── */
+header.hero{
+  min-height:100vh; display:flex; align-items:center;
+  padding:120px 0 72px; position:relative;
+}
+.hero-grid{
+  display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;
+}
+.hero-kicker{
+  font-family:var(--mono); font-size:13px; color:var(--accent);
+  margin-bottom:18px; display:flex; align-items:center; gap:10px;
+}
+.hero-kicker::before{ content:""; width:28px; height:1px; background:var(--accent); display:inline-block; }
+h1.name{
+  font-size:clamp(38px, 5.4vw, 62px); line-height:1.05;
+  font-weight:700; letter-spacing:-.02em; margin-bottom:14px;
+}
+h1.name .hl{ color:var(--accent); }
+.hero-role{
+  font-size:clamp(17px, 2vw, 21px); color:var(--muted); font-weight:500;
+  margin-bottom:22px; max-width:46ch;
+}
+.hero-role b{ color:var(--text); font-weight:600; }
+.hero-desc{ color:var(--muted); max-width:52ch; margin-bottom:34px; font-size:15.5px; }
+.hero-ctas{ display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+.btn{
+  font-family:var(--mono); font-size:13.5px; font-weight:700;
+  padding:13px 22px; border-radius:8px; text-decoration:none;
+  transition:transform .2s ease, box-shadow .2s ease, background .2s, color .2s, border-color .2s;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-primary{
+  background:var(--accent); color:#06130a; border:1px solid var(--accent);
+  box-shadow:0 0 0 rgba(63,185,80,0);
+}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 28px rgba(63,185,80,.28); }
+.btn-ghost{ border:1px solid var(--border-2); color:var(--text); background:transparent; }
+.btn-ghost:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
+.hero-stats{
+  display:flex; gap:32px; margin-top:44px; flex-wrap:wrap;
+}
+.stat .num{
+  font-family:var(--mono); font-size:26px; font-weight:700; color:var(--text);
+}
+.stat .num em{ color:var(--accent); font-style:normal; }
+.stat .lbl{ font-size:12px; color:var(--faint); font-family:var(--mono); letter-spacing:.04em; margin-top:2px; }
+
+/* terminal window */
+.term{
+  background:var(--panel); border:1px solid var(--border-2); border-radius:12px;
+  overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,.45);
+  font-family:var(--mono); font-size:13.5px;
+}
+.term-bar{
+  display:flex; align-items:center; gap:8px; padding:12px 16px;
+  background:var(--panel-2); border-bottom:1px solid var(--border);
+}
+.dot{ width:11px; height:11px; border-radius:50%; }
+.dot.r{ background:#e56458; } .dot.y{ background:#d9a03f; } .dot.g{ background:#3fb950; }
+.term-title{ margin-left:auto; margin-right:auto; color:var(--faint); font-size:12px; }
+.term-body{ padding:22px 20px 26px; min-height:270px; }
+.tline{ margin-bottom:10px; word-break:break-word; }
+.tline .ps1{ color:var(--accent); font-weight:700; }
+.tline .ps2{ color:var(--cyan); }
+.tline .cmd{ color:var(--text); }
+.tline.out{ color:var(--muted); padding-left:2px; }
+.tline.out b{ color:var(--text); font-weight:700; }
+.cursor{
+  display:inline-block; width:9px; height:17px; background:var(--accent);
+  vertical-align:-3px; animation:blink 1s steps(1) infinite;
+}
+@keyframes blink{ 50%{ opacity:0; } }
+
+.scroll-hint{
+  position:absolute; left:50%; bottom:26px; transform:translateX(-50%);
+  font-family:var(--mono); font-size:11px; color:var(--faint);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  text-decoration:none;
+}
+.scroll-hint span{ writing-mode:vertical-rl; letter-spacing:.25em; }
+.scroll-hint::after{ content:""; width:1px; height:34px; background:linear-gradient(var(--accent), transparent); }
+
+/* ── sections ─────────────────────────────────────────────── */
+section{ padding:96px 0; scroll-margin-top:70px; position:relative; }
+.sec-head{ margin-bottom:48px; }
+.sec-head .idx{
+  font-family:var(--mono); font-size:13px; color:var(--accent); display:block; margin-bottom:8px;
+}
+.sec-head h2{
+  font-family:var(--mono); font-size:clamp(24px,3.4vw,34px); font-weight:700;
+  letter-spacing:-.01em; display:flex; align-items:center; gap:14px;
+}
+.sec-head h2 .p{ color:var(--accent); }
+.sec-head h2::after{ content:""; flex:1; height:1px; background:var(--border-2); max-width:280px; }
+.sec-sub{ color:var(--muted); margin-top:10px; max-width:60ch; font-size:15px; }
+
+/* about */
+.about-grid{ display:grid; grid-template-columns:1.2fr .8fr; gap:48px; align-items:start; }
+.about-text p{ color:var(--muted); margin-bottom:18px; font-size:15.5px; }
+.about-text p b{ color:var(--text); font-weight:600; }
+.about-text .promptline{ font-family:var(--mono); font-size:13px; color:var(--faint); margin-bottom:20px; }
+.about-text .promptline .p{ color:var(--accent); }
+.fact-card{
+  background:var(--panel); border:1px solid var(--border-2); border-radius:var(--radius);
+  padding:24px; font-family:var(--mono); font-size:13.5px;
+}
+.fact-card .fc-title{ color:var(--accent); font-weight:700; margin-bottom:16px; font-size:12.5px; letter-spacing:.08em; }
+.fact-row{ display:flex; justify-content:space-between; gap:16px; padding:9px 0; border-bottom:1px dashed var(--border); }
+.fact-row:last-child{ border-bottom:none; }
+.fact-row .k{ color:var(--faint); }
+.fact-row .v{ color:var(--text); text-align:right; }
+.fact-row .v a{ color:var(--cyan); text-decoration:none; }
+.fact-row .v a:hover{ text-decoration:underline; }
+
+/* expertise */
+.skills-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; }
+.skill-card{
+  background:var(--panel); border:1px solid var(--border-2); border-radius:var(--radius);
+  padding:24px 22px; transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  position:relative; overflow:hidden;
+}
+.skill-card::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, var(--accent), transparent);
+  opacity:0; transition:opacity .25s;
+}
+.skill-card:hover{ transform:translateY(-4px); border-color:var(--accent-dim); box-shadow:0 16px 40px rgba(0,0,0,.35); }
+.skill-card:hover::before{ opacity:1; }
+.skill-card .sk-cmd{ font-family:var(--mono); font-size:12px; color:var(--accent); margin-bottom:12px; }
+.skill-card h3{ font-size:16.5px; font-weight:600; margin-bottom:14px; letter-spacing:-.01em; }
+.chips{ display:flex; flex-wrap:wrap; gap:7px; }
+.chip{
+  font-family:var(--mono); font-size:11.5px; color:var(--muted);
+  border:1px solid var(--border-2); border-radius:5px; padding:4px 9px;
+  background:var(--bg-2); transition:color .2s, border-color .2s;
+}
+.skill-card:hover .chip{ color:var(--text); }
+.chip.hot{ color:var(--accent); border-color:var(--accent-dim); }
+
+/* experience timeline */
+.timeline{ position:relative; padding-left:34px; }
+.timeline::before{
+  content:""; position:absolute; left:8px; top:6px; bottom:6px;
+  width:1px; background:var(--border-2);
+}
+.t-item{ position:relative; padding-bottom:42px; }
+.t-item:last-child{ padding-bottom:0; }
+.t-item::before{
+  content:""; position:absolute; left:-30px; top:7px;
+  width:9px; height:9px; border-radius:50%;
+  background:var(--bg); border:2px solid var(--accent);
+}
+.t-item.now::before{ box-shadow:0 0 0 5px rgba(63,185,80,.14); background:var(--accent); }
+.t-date{
+  font-family:var(--mono); font-size:12px; color:var(--cyan);
+  margin-bottom:6px; display:inline-flex; align-items:center; gap:8px;
+}
+.badge-now{
+  font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:.08em;
+  color:#06130a; background:var(--accent); border-radius:4px; padding:2px 7px;
+}
+.t-item h3{ font-size:18px; font-weight:600; letter-spacing:-.01em; }
+.t-item .org{ font-family:var(--mono); font-size:13px; color:var(--accent); margin:3px 0 12px; }
+.t-item ul{ list-style:none; }
+.t-item li{
+  color:var(--muted); font-size:14.5px; padding-left:20px; position:relative; margin-bottom:7px;
+  max-width:75ch;
+}
+.t-item li::before{ content:"▸"; position:absolute; left:0; color:var(--accent); font-size:12px; top:2px; }
+.t-tags{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+
+/* education + certifications */
+.edu-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:18px; align-items:start; }
+.edu-card, .cert-card{
+  background:var(--panel); border:1px solid var(--border-2);
+  border-radius:var(--radius); padding:26px;
+}
+.edu-card .deg{ font-size:19px; font-weight:600; letter-spacing:-.01em; margin-bottom:4px; }
+.edu-card .school{ font-family:var(--mono); font-size:13px; color:var(--accent); margin-bottom:14px; }
+.edu-meta{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+.edu-card p{ color:var(--muted); font-size:14.5px; }
+.gpa{
+  font-family:var(--mono); font-size:12px; color:var(--amber);
+  border:1px solid rgba(217,160,63,.35); background:rgba(217,160,63,.08);
+  padding:4px 10px; border-radius:5px;
+}
+.cert-group{ margin-bottom:18px; }
+.cert-group:last-child{ margin-bottom:0; }
+.cert-group .cg-title{
+  font-family:var(--mono); font-size:12.5px; color:var(--cyan); font-weight:700;
+  margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}
+.cert-group .cg-title::before{ content:"$"; color:var(--accent); }
+.cert-group ul{ list-style:none; }
+.cert-group li{
+  color:var(--muted); font-size:14px; padding-left:18px; position:relative; margin-bottom:5px;
+}
+.cert-group li::before{ content:"✓"; position:absolute; left:0; color:var(--accent); font-size:11px; top:3px; }
+
+/* ── portfolio (dummy slots) ──────────────────────────────── */
+.projects-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+.project-card{
+  border:1px dashed var(--border-2); border-radius:var(--radius);
+  padding:26px 24px; background:rgba(16,24,32,.5);
+  display:flex; flex-direction:column; min-height:290px;
+  transition:transform .25s ease, border-color .25s ease, background .25s ease;
+  position:relative;
+}
+.project-card:hover{ transform:translateY(-4px); border-color:var(--accent); background:var(--panel); }
+.project-card .pj-top{
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;
+  font-family:var(--mono);
+}
+.pj-idx{ font-size:13px; color:var(--accent); font-weight:700; }
+.pj-links{ display:flex; gap:10px; }
+.pj-links a{ color:var(--faint); text-decoration:none; font-size:15px; transition:color .2s; }
+.pj-links a:hover{ color:var(--accent); }
+.project-card h3{ font-size:18px; font-weight:600; margin-bottom:10px; letter-spacing:-.01em; }
+.project-card p{ color:var(--muted); font-size:14px; flex:1; }
+.pj-tags{ display:flex; flex-wrap:wrap; gap:7px; margin-top:18px; }
+.pj-flag{
+  position:absolute; top:-1px; right:18px; font-family:var(--mono); font-size:9.5px;
+  letter-spacing:.14em; color:var(--faint); border:1px solid var(--border);
+  border-top:none; padding:4px 8px 3px; border-radius:0 0 5px 5px; background:var(--bg-2);
+}
+.project-add{
+  border:1px dashed var(--border-2); border-radius:var(--radius);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:10px; min-height:290px; color:var(--faint); font-family:var(--mono);
+  font-size:13px; text-align:center; padding:24px; transition:color .25s, border-color .25s;
+}
+.project-add:hover{ color:var(--accent); border-color:var(--accent); }
+.project-add .plus{ font-size:34px; font-weight:400; }
+.portfolio-note{
+  margin-top:22px; font-family:var(--mono); font-size:12.5px; color:var(--faint);
+  border-left:2px solid var(--accent-dim); padding-left:14px;
+}
+.portfolio-note .p{ color:var(--accent); }
+
+/* contact / footer */
+.contact-box{
+  text-align:center; max-width:640px; margin:0 auto;
+}
+.contact-box h2{
+  font-family:var(--mono); font-size:clamp(26px,3.6vw,38px); font-weight:700; margin-bottom:16px;
+}
+.contact-box h2 .p{ color:var(--accent); }
+.contact-box p{ color:var(--muted); margin-bottom:34px; font-size:15.5px; }
+.socials{ display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-top:34px; }
+.social{
+  font-family:var(--mono); font-size:12.5px; color:var(--muted);
+  border:1px solid var(--border-2); border-radius:6px; padding:9px 15px;
+  text-decoration:none; transition:all .2s; display:inline-flex; align-items:center; gap:7px;
+}
+.social:hover{ color:var(--accent); border-color:var(--accent); transform:translateY(-2px); }
+.social .k{ color:var(--accent); }
+footer{
+  border-top:1px solid var(--border); padding:28px 0; margin-top:40px;
+}
+.foot{
+  display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;
+  font-family:var(--mono); font-size:12px; color:var(--faint);
+}
+.foot .p{ color:var(--accent); }
+
+/* reveal defaults (JS animates from these) */
+[data-reveal]{ will-change:transform,opacity; }
+
+/* ── responsive ───────────────────────────────────────────── */
+@media (max-width: 920px){
+  .hero-grid{ grid-template-columns:1fr; gap:40px; }
+  .about-grid{ grid-template-columns:1fr; }
+  .skills-grid{ grid-template-columns:repeat(2,1fr); }
+  .edu-grid{ grid-template-columns:1fr; }
+  .projects-grid{ grid-template-columns:repeat(2,1fr); }
+  header.hero{ padding-top:110px; min-height:auto; }
+}
+@media (max-width: 640px){
+  .nav-links{
+    position:fixed; top:57px; right:0; left:0;
+    background:rgba(10,14,18,.97); border-bottom:1px solid var(--border);
+    flex-direction:column; align-items:stretch; padding:12px 20px 18px; gap:2px;
+    display:none;
+  }
+  .nav-links.open{ display:flex; }
+  .nav-links a{ padding:12px; font-size:13.5px; }
+  #menuBtn{ display:inline-block; }
+  .skills-grid, .projects-grid{ grid-template-columns:1fr; }
+  section{ padding:72px 0; }
+  .hero-stats{ gap:22px; }
+  .sec-head h2::after{ max-width:120px; }
+}
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .cursor{ animation:none; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="#top"><span class="p">raffi@</span>is<span class="path">:~$</span></a>
+    <button id="menuBtn" aria-label="Toggle menu">[ menu ]</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about"><span class="n">01.</span>about</a></li>
+      <li><a href="#expertise"><span class="n">02.</span>expertise</a></li>
+      <li><a href="#experience"><span class="n">03.</span>experience</a></li>
+      <li><a href="#education"><span class="n">04.</span>education</a></li>
+      <li><a href="#portfolio"><span class="n">05.</span>portfolio</a></li>
+      <li><a href="#contact"><span class="n">06.</span>contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hero-kicker" data-hero>// hello world, I am</div>
+      <h1 class="name" data-hero>Raffi Ihza<br><span class="hl">Zuhairnawan</span></h1>
+      <p class="hero-role" data-hero><b>System Administrator</b> &amp; Information Systems graduate working where <b>Linux, DevOps, and cloud</b> meet.</p>
+      <p class="hero-desc" data-hero>I keep servers healthy, automate the boring parts, and turn repetitive work into small tools that do it for me. Always learning — one course, one project, one box at a time.</p>
+      <div class="hero-ctas" data-hero>
+        <a class="btn btn-primary" href="#portfolio">view_projects --all</a>
+        <a class="btn btn-ghost" href="#contact">./contact.sh</a>
+      </div>
+      <div class="hero-stats" data-hero>
+        <div class="stat"><div class="num" data-count="3.96" data-decimals="2">3.96</div><div class="lbl">GPA / 4.00</div></div>
+        <div class="stat"><div class="num"><span data-count="593">593</span></div><div class="lbl">EPrT SCORE</div></div>
+        <div class="stat"><div class="num"><span data-count="7">7</span><em>+</em></div><div class="lbl">ROLES SHIPPED</div></div>
+        <div class="stat"><div class="num"><span data-count="15">15</span><em>+</em></div><div class="lbl">CERTIFICATIONS</div></div>
+      </div>
+    </div>
+
+    <div class="term" data-hero>
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">raffi@devbox: ~</span>
+      </div>
+      <div class="term-body" id="termBody" aria-label="Terminal introduction"></div>
+    </div>
+  </div>
+  <a class="scroll-hint" href="#about"><span>SCROLL</span></a>
+</header>
+
+<!-- ══════════ 01 ABOUT ══════════ -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="idx">01.</span>
+      <h2><span class="p">$</span> cat about.md</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text" data-reveal>
+        <div class="promptline"><span class="p">raffi@is:~$</span> less ./profile.txt</div>
+        <p>I'm an <b>Information Systems graduate from Telkom University (GPA 3.96)</b> with a deep interest in coding, data, Linux operating systems, DevOps, and cloud computing — currently keeping dedicated development servers alive and well as a <b>System Administrator at PT. Adhikari Inovasi Indonesia</b>.</p>
+        <p>I take what I'm interested in seriously and like to challenge myself to improve — through courses, certifications, and small projects that solve real problems. Along the way I've <b>built automation tools for publication-data workflows</b>, taught practicum classes on <b>operating systems and information security</b>, and supported day-to-day IT operations.</p>
+        <p>I work well with teams — from HR staff roles to chief committee of scholarship webinars attended by students nationwide.</p>
+      </div>
+      <div class="fact-card" data-reveal>
+        <div class="fc-title">// QUICK FACTS</div>
+        <div class="fact-row"><span class="k">role</span><span class="v">System Administrator</span></div>
+        <div class="fact-row"><span class="k">based_in</span><span class="v">Indonesia</span></div>
+        <div class="fact-row"><span class="k">degree</span><span class="v">B.Sc. Information Systems</span></div>
+        <div class="fact-row"><span class="k">focus</span><span class="v">Linux · DevOps · Cloud</span></div>
+        <div class="fact-row"><span class="k">languages</span><span class="v">ID · JV · EN · JP</span></div>
+        <div class="fact-row"><span class="k">email</span><span class="v"><a href="mailto:raffiihzazuhairnawan@gmail.com">say_hi →</a></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 02 EXPERTISE ══════════ -->
+<section id="expertise">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="idx">02.</span>
+      <h2><span class="p">$</span> ls ~/expertise</h2>
+      <p class="sec-sub">The toolbox I reach for — from code to containers to cloud.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="sk-cmd">$ tree ./programming</div>
+        <h3>Programming</h3>
+        <div class="chips"><span class="chip hot">Python</span><span class="chip hot">PHP</span><span class="chip">Java</span><span class="chip">HTML</span><span class="chip">Bash</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-cmd">$ tree ./backend</div>
+        <h3>Backend Frameworks</h3>
+        <div class="chips"><span class="chip hot">Laravel</span><span class="chip">Flask</span><span class="chip">Django</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-cmd">$ systemctl status linux</div>
+        <h3>Linux &amp; SysAdmin</h3>
+        <div class="chips"><span class="chip hot">Linux</span><span class="chip">Rocky Linux</span><span class="chip">Nginx</span><span class="chip">DNS</span><span class="chip">Mail Server</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-cmd">$ docker ps</div>
+        <h3>DevOps &amp; Infra</h3>
+        <div class="chips"><span class="chip hot">Docker</span><span class="chip">VMware / VirtualBox</span><span class="chip">PaaS</span><span class="chip">IaaS</span><span class="chip">CI tooling</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-cmd">$ select * from skills;</div>
+        <h3>Databases</h3>
+        <div class="chips"><span class="chip hot">MySQL</span><span class="chip">PostgreSQL</span><span class="chip">MongoDB</span></div>
+      </div>
+      <div class="skill-card">
+        <div class="sk-cmd">$ az account show</div>
+        <h3>Cloud &amp; Security</h3>
+        <div class="chips"><span class="chip hot">Azure</span><span class="chip">Alibaba Cloud</span><span class="chip">Kali Linux</span><span class="chip">Nmap</span><span class="chip">Encryption</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 03 EXPERIENCE ══════════ -->
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="idx">03.</span>
+      <h2><span class="p">$</span> git log --experience</h2>
+      <p class="sec-sub">Where I've worked, taught, and built — newest commit first.</p>
+    </div>
+    <div class="timeline">
+
+      <div class="t-item now" data-reveal>
+        <span class="t-date">Sep 2025 → Present <span class="badge-now">CURRENT</span></span>
+        <h3>System Administrator — Prodev Division</h3>
+        <div class="org">PT. Adhikari Inovasi Indonesia</div>
+        <ul>
+          <li>Responsible for the administration and upkeep of dedicated development servers supporting the Prodev Division.</li>
+        </ul>
+        <div class="t-tags"><span class="chip hot">SysAdmin</span><span class="chip">Linux</span><span class="chip">Servers</span></div>
+      </div>
+
+      <div class="t-item" data-reveal>
+        <span class="t-date">Aug 2025 → Sep 2025</span>
+        <h3>Google Scholar Data Verification (Intern)</h3>
+        <div class="org">PPM Telkom University</div>
+        <ul>
+          <li>Verified lecturers' publications from Google Scholar for internal and external reporting.</li>
+          <li>Improved workflow efficiency by building custom tools: CSV export, cross-publisher data filtering, task automation, and SCImago quartile scraping to cut time and effort.</li>
+        </ul>
+        <div class="t-tags"><span class="chip hot">Python</span><span class="chip">Automation</span><span class="chip">Scraping</span></div>
+      </div>
+
+      <div class="t-item" data-reveal>
+        <span class="t-date">Feb 2025 → Aug 2025</span>
+        <h3>Ticketing &amp; IT Support Staff</h3>
+        <div class="org">TOSS Telkom University</div>
+        <ul>
+          <li>Handled ticketing and resolved IT-related problems on the TOSS application at Telkom University.</li>
+          <li>Managed the TOSS application server; fixed deliverability and deployment of the application.</li>
+        </ul>
+        <div class="t-tags"><span class="chip hot">Server Mgmt</span><span class="chip">Deployment</span><span class="chip">Support</span></div>
+      </div>
+
+      <div class="t-item" data-reveal>
+        <span class="t-date">Feb 2025 → Jun 2025</span>
+        <h3>Assistant Practicum — Information System Security</h3>
+        <div class="org">SISJAR, Telkom University</div>
+        <ul>
+          <li>Taught practicants information-system security: steganography, encryption, and OS vulnerabilities.</li>
+          <li>Guided hands-on usage of Kali Linux, VulnOS v2, Nmap, VirtualBox, and SQLDump.</li>
+        </ul>
+        <div class="t-tags"><span class="chip hot">Security</span><span class="chip">Kali Linux</span><span class="chip">Teaching</span></div>
+      </div>
+
+      <div class="t-item" data-reveal>
+        <span class="t-date">Jan 2024 → Feb 2025</span>
+        <h3>IT Staff</h3>
+        <div class="org">Efika Creative</div>
+        <ul>
+          <li>Handled technological aspects of day-to-day operations.</li>
+          <li>Increased operational efficiency by utilizing, building, and deploying small administration tools.</li>
+        </ul>
+        <div class="t-tags"><span class="chip hot">Tooling</span><span class="chip">IT Ops</span></div>
+      </div>
+
+      <div class="t-item" data-reveal>
+        <span class="t-date">Sep 2024 → Jan 2025</span>
+        <h3>Assistant Practicum — Operating Systems</h3>
+        <div class="org">SISJAR, Telkom University</div>
+        <ul>
+          <li>Taught basic Linux commands, containerization, bash scripting, web server, DNS settings, and basic mail server.</li>
+          <li>Assisted practicants with VMware Workstation, Rocky Linux, Docker, Nginx, and Thunderbird.</li>
+        </ul>
+        <div class="t-tags"><span class="chip hot">Linux</span><span class="chip">Docker</span><span class="chip">Teaching</span></div>
+      </div>
+
+      <div class="t-item" data-reveal>
+        <span class="t-date">Jun 2024 → Aug 2024</span>
+        <h3>Data Management &amp; Web Developer (Intern)</h3>
+        <div class="org">PPM Telkom University</div>
+        <ul>
+          <li>Collected and filtered lecturers' profile and citation data from Google Scholar via third-party API (SerpAPI).</li>
+          <li>Built a web dashboard to display lecturers' data and graphs.</li>
+        </ul>
+        <div class="t-tags"><span class="chip hot">Web Dev</span><span class="chip">SerpAPI</span><span class="chip">Dashboard</span></div>
+      </div>
+
+    </div>
+
+    <div class="sec-head" style="margin-top:72px;" data-reveal>
+      <span class="idx">03b.</span>
+      <h2><span class="p">$</span> git log --organizations</h2>
+    </div>
+    <div class="timeline">
+      <div class="t-item" data-reveal>
+        <span class="t-date">Jan 2024 → May 2025</span>
+        <h3>Human Resources Staff</h3>
+        <div class="org">Al-Fath Gen 11, Telkom University</div>
+        <ul><li>Handled programs related to human resources in Al-Fath Gen 11.</li></ul>
+      </div>
+      <div class="t-item" data-reveal>
+        <span class="t-date">Mar 2024</span>
+        <h3>Chief Committee — Webinar PSDM "Meraih Beasiswa, Pasti Bisa"</h3>
+        <div class="org">Telkom University</div>
+        <ul><li>Led a webinar educating students on domestic and international scholarship opportunities.</li></ul>
+      </div>
+      <div class="t-item" data-reveal>
+        <span class="t-date">Sep 2023</span>
+        <h3>Chief Committee — ECAFEST 2.0: Unlocking Path to Scholarships</h3>
+        <div class="org">Telkom University</div>
+        <ul><li>Led a scholarship-education webinar program inviting students to pursue scholarships.</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ 04 EDUCATION & CERTS ══════════ -->
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="idx">04.</span>
+      <h2><span class="p">$</span> cat education.log certs/</h2>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card" data-reveal>
+        <div class="deg">Bachelor of Information Systems</div>
+        <div class="school">Telkom University · 2021 → 2025</div>
+        <div class="edu-meta">
+          <span class="gpa">GPA 3.96 / 4.00</span>
+          <span class="chip">Enterprise Infrastructure Management (EIM)</span>
+        </div>
+        <p>Graduated with a major in Information Systems, focusing interest on Enterprise Infrastructure Management — the backbone of how organizations run their systems.</p>
+      </div>
+      <div class="cert-card" data-reveal>
+        <div class="cert-group">
+          <div class="cg-title">coursera --google-it-support</div>
+          <ul>
+            <li>Google IT Support Professional track</li>
+            <li>Technical Support Fundamentals · Operating Systems and You</li>
+            <li>System Administration &amp; IT Infrastructure Services</li>
+            <li>IT Security: Defense Against the Digital Dark Arts</li>
+            <li>The Bits and Bytes of Computer Networking</li>
+          </ul>
+        </div>
+        <div class="cert-group">
+          <div class="cg-title">microsoft --azure</div>
+          <ul>
+            <li>AZ-104: Microsoft Azure Administrator</li>
+            <li>AZ-500: Microsoft Azure Security Technologies</li>
+            <li>AZ-900: Microsoft Azure Fundamentals</li>
+          </ul>
+        </div>
+        <div class="cert-group">
+          <div class="cg-title">oracle-academy --java</div>
+          <ul>
+            <li>Oracle Java Foundations · Oracle Java Programming</li>
+          </ul>
+        </div>
+        <div class="cert-group">
+          <div class="cg-title">sap --erp</div>
+          <ul>
+            <li>SAP01 Fundamental · SCM500 Procurement · AC010 Financial Accounting</li>
+          </ul>
+        </div>
+        <div class="cert-group">
+          <div class="cg-title">alibaba-cloud</div>
+          <ul>
+            <li>ACA Business User</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     05 PORTFOLIO — DUMMY SECTION
+     These cards are placeholders for your own projects.
+     HOW TO EDIT: for each card, replace the title, description,
+     tag chips and the two link hrefs ("#") with your own content.
+     Duplicate an entire <article class="project-card">…</article>
+     block to add more projects.
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="portfolio">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="idx">05.</span>
+      <h2><span class="p">$</span> ls ~/portfolio</h2>
+      <p class="sec-sub">Selected projects &amp; builds. Slots below are ready — swap in your own work.</p>
+    </div>
+
+    <div class="projects-grid">
+
+      <!-- ▼▼▼ PROJECT SLOT 1 — EDIT ME ▼▼▼ -->
+      <article class="project-card">
+        <span class="pj-flag">PLACEHOLDER</span>
+        <div class="pj-top">
+          <span class="pj-idx">./project_01</span>
+          <div class="pj-links">
+            <a href="#" aria-label="Repository" title="Repository">⎇</a>
+            <a href="#" aria-label="Live demo" title="Live demo">↗</a>
+          </div>
+        </div>
+        <h3>Your Project Title</h3>
+        <p>Replace this with a short description of your project — what it does, the problem it solves, and what you built or learned.</p>
+        <div class="pj-tags"><span class="chip">stack</span><span class="chip">goes</span><span class="chip">here</span></div>
+      </article>
+      <!-- ▲▲▲ PROJECT SLOT 1 ▲▲▲ -->
+
+      <!-- ▼▼▼ PROJECT SLOT 2 — EDIT ME ▼▼▼ -->
+      <article class="project-card">
+        <span class="pj-flag">PLACEHOLDER</span>
+        <div class="pj-top">
+          <span class="pj-idx">./project_02</span>
+          <div class="pj-links">
+            <a href="#" aria-label="Repository" title="Repository">⎇</a>
+            <a href="#" aria-label="Live demo" title="Live demo">↗</a>
+          </div>
+        </div>
+        <h3>Your Project Title</h3>
+        <p>Replace this with a short description of your project — what it does, the problem it solves, and what you built or learned.</p>
+        <div class="pj-tags"><span class="chip">stack</span><span class="chip">goes</span><span class="chip">here</span></div>
+      </article>
+      <!-- ▲▲▲ PROJECT SLOT 2 ▲▲▲ -->
+
+      <!-- ▼▼▼ PROJECT SLOT 3 — EDIT ME ▼▼▼ -->
+      <article class="project-card">
+        <span class="pj-flag">PLACEHOLDER</span>
+        <div class="pj-top">
+          <span class="pj-idx">./project_03</span>
+          <div class="pj-links">
+            <a href="#" aria-label="Repository" title="Repository">⎇</a>
+            <a href="#" aria-label="Live demo" title="Live demo">↗</a>
+          </div>
+        </div>
+        <h3>Your Project Title</h3>
+        <p>Replace this with a short description of your project — what it does, the problem it solves, and what you built or learned.</p>
+        <div class="pj-tags"><span class="chip">stack</span><span class="chip">goes</span><span class="chip">here</span></div>
+      </article>
+      <!-- ▲▲▲ PROJECT SLOT 3 ▲▲▲ -->
+
+      <!-- New slot hint card — delete once filled -->
+      <div class="project-add">
+        <span class="plus">+</span>
+        <span>duplicate a project-card<br>in the HTML to add more</span>
+      </div>
+
+    </div>
+
+    <p class="portfolio-note" data-reveal><span class="p">note:</span> these are dummy slots — open the file, search for <b>"PROJECT SLOT"</b>, and drop in your own projects.</p>
+  </div>
+</section>
+
+<!-- ══════════ 06 CONTACT ══════════ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-box" data-reveal>
+      <span class="idx" style="font-family:var(--mono); font-size:13px; color:var(--accent); display:block; margin-bottom:10px;">06.</span>
+      <h2><span class="p">$</span> ./contact.sh --run</h2>
+      <p>My inbox is always open — whether it's a role, a collaboration, a server on fire, or just a hello. I'll get back to you as soon as I can.</p>
+      <a class="btn btn-primary" href="mailto:raffiihzazuhairnawan@gmail.com">send_email →</a>
+      <div class="socials">
+        <a class="social" href="https://github.com/raffiihza" target="_blank" rel="noopener"><span class="k">gh</span> github.com/raffiihza</a>
+        <a class="social" href="https://www.linkedin.com/in/raffi-ihza-zuhairnawan" target="_blank" rel="noopener"><span class="k">in</span> raffi-ihza-zuhairnawan</a>
+        <a class="social" href="https://wa.me/628970590708" target="_blank" rel="noopener"><span class="k">wa</span> +62 897-0590-708</a>
+        <a class="social" href="https://instagram.com/riz_ihza" target="_blank" rel="noopener"><span class="k">ig</span> @riz_ihza</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span><span class="p">raffi@is:~$</span> echo "© 2026 Raffi Ihza Zuhairnawan"</span>
+    <span>designed &amp; built with <span class="p">GSAP</span> · exit 0</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasGsap = typeof window.gsap !== "undefined";
+  if (hasGsap && window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+
+  /* ── terminal typing (vanilla so it works even if CDN fails) ── */
+  var lines = [
+    { prompt: true,  cmd: "whoami" },
+    { out: "<b>Raffi Ihza Zuhairnawan</b> — Information Systems Graduate" },
+    { prompt: true,  cmd: "cat current_role.txt" },
+    { out: "System Administrator @ <b>PT. Adhikari Inovasi Indonesia</b>" },
+    { prompt: true,  cmd: "ls ./interests" },
+    { out: "coding/&nbsp;&nbsp;data/&nbsp;&nbsp;linux/&nbsp;&nbsp;devops/&nbsp;&nbsp;cloud/" },
+    { prompt: true,  cmd: "uptime --learning" },
+    { out: "always on · courses, projects, certifications in progress" }
+  ];
+  var termBody = document.getElementById("termBody");
+
+  function renderFinal(){
+    termBody.innerHTML = "";
+    lines.forEach(function(l){
+      var div = document.createElement("div");
+      if (l.prompt){
+        div.className = "tline";
+        div.innerHTML = '<span class="ps1">raffi@devbox</span><span class="ps2">:~$</span> <span class="cmd"></span>';
+        div.querySelector(".cmd").textContent = l.cmd;
+      } else {
+        div.className = "tline out";
+        div.innerHTML = l.out;
+      }
+      termBody.appendChild(div);
+    });
+    var last = document.createElement("div");
+    last.className = "tline";
+    last.innerHTML = '<span class="ps1">raffi@devbox</span><span class="ps2">:~$</span> <span class="cursor"></span>';
+    termBody.appendChild(last);
+  }
+
+  function typeLines(){
+    termBody.innerHTML = "";
+    var li = 0;
+    function nextLine(){
+      if (li >= lines.length){
+        var last = document.createElement("div");
+        last.className = "tline";
+        last.innerHTML = '<span class="ps1">raffi@devbox</span><span class="ps2">:~$</span> <span class="cursor"></span>';
+        termBody.appendChild(last);
+        return;
+      }
+      var l = lines[li++];
+      var div = document.createElement("div");
+      if (l.prompt){
+        div.className = "tline";
+        div.innerHTML = '<span class="ps1">raffi@devbox</span><span class="ps2">:~$</span> <span class="cmd"></span><span class="cursor"></span>';
+        termBody.appendChild(div);
+        var cmdEl = div.querySelector(".cmd");
+        var cursor = div.querySelector(".cursor");
+        var ci = 0;
+        var tick = setInterval(function(){
+          cmdEl.textContent = l.cmd.slice(0, ++ci);
+          if (ci >= l.cmd.length){
+            clearInterval(tick);
+            cursor.remove();
+            setTimeout(nextLine, 240);
+          }
+        }, 42);
+      } else {
+        div.className = "tline out";
+        div.innerHTML = l.out;
+        div.style.opacity = "0";
+        termBody.appendChild(div);
+        requestAnimationFrame(function(){
+          div.style.transition = "opacity .3s ease";
+          div.style.opacity = "1";
+        });
+        setTimeout(nextLine, 360);
+      }
+    }
+    setTimeout(nextLine, 500);
+  }
+  var staticMode = /[?&]static/.test(location.search);
+  (staticMode || reduceMotion) ? renderFinal() : typeLines();
+
+  /* ── mobile menu ── */
+  var menuBtn = document.getElementById("menuBtn");
+  var navLinks = document.getElementById("navLinks");
+  menuBtn.addEventListener("click", function(){ navLinks.classList.toggle("open"); });
+  navLinks.querySelectorAll("a").forEach(function(a){
+    a.addEventListener("click", function(){ navLinks.classList.remove("open"); });
+  });
+
+  /* ── active nav link via IntersectionObserver ── */
+  var sections = document.querySelectorAll("section[id]");
+  var linkMap = {};
+  navLinks.querySelectorAll("a").forEach(function(a){
+    linkMap[a.getAttribute("href").slice(1)] = a;
+  });
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        navLinks.querySelectorAll("a").forEach(function(a){ a.classList.remove("active"); });
+        var link = linkMap[e.target.id];
+        if (link) link.classList.add("active");
+      }
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  sections.forEach(function(s){ io.observe(s); });
+
+  if (!hasGsap) return;           /* graceful: everything already visible */
+  if (reduceMotion){              /* honor reduced motion: skip animations */
+    gsap.set("#progress", { scaleX: 0 });
+    return;
+  }
+
+  /* ── GSAP: scroll progress bar ── */
+  gsap.to("#progress", {
+    scaleX: 1, ease: "none",
+    scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.3 }
+  });
+
+  /* ── GSAP: hero entrance ── */
+  gsap.from("[data-hero]", {
+    y: 34, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.12, delay: 0.15
+  });
+  gsap.from("nav", { y: -60, opacity: 0, duration: 0.7, ease: "power2.out" });
+  gsap.from(".scroll-hint", { opacity: 0, duration: 1, delay: 1.6 });
+
+  /* ── GSAP: animated counters ── */
+  document.querySelectorAll("[data-count]").forEach(function(el){
+    var target = parseFloat(el.getAttribute("data-count"));
+    var decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+    var obj = { v: 0 };
+    gsap.to(obj, {
+      v: target, duration: 1.8, ease: "power2.out", delay: 0.5,
+      onUpdate: function(){ el.textContent = obj.v.toFixed(decimals); },
+      scrollTrigger: { trigger: el, start: "top 95%" }
+    });
+  });
+
+  /* ── GSAP: generic scroll reveals ── */
+  gsap.utils.toArray("[data-reveal]").forEach(function(el){
+    gsap.from(el, {
+      y: 30, opacity: 0, duration: 0.85, ease: "power3.out",
+      scrollTrigger: { trigger: el, start: "top 88%", once: true }
+    });
+  });
+
+  /* ── GSAP: timeline items slide in ── */
+  gsap.utils.toArray(".t-item").forEach(function(item, i){
+    gsap.from(item, {
+      x: -28, opacity: 0, duration: 0.7, ease: "power2.out",
+      scrollTrigger: { trigger: item, start: "top 90%", once: true }
+    });
+  });
+
+  /* ── GSAP: skill & project cards subtle stagger pop ── */
+  [".skills-grid", ".projects-grid"].forEach(function(gridSel){
+    var grid = document.querySelector(gridSel);
+    if (!grid) return;
+    gsap.from(grid.children, {
+      scale: 0.96, opacity: 0, duration: 0.55, ease: "back.out(1.4)", stagger: 0.08,
+      scrollTrigger: { trigger: grid, start: "top 85%", once: true }
+    });
+  });
+
+  /* ── GSAP: terminal float on scroll (parallax whisper) ── */
+  gsap.to(".term", {
+    y: -26, ease: "none",
+    scrollTrigger: { trigger: "header.hero", start: "top top", end: "bottom top", scrub: true }
+  });
+})();
+</script>
+</body>
+</html>
